@@ -41,7 +41,7 @@ public class PlanetService {
                 .orElseThrow(()-> new PlanetNotFoundException("Planet not found"));
     }
 
-    private static int getNumberOfAppearancesInMovies(ResultsItem result) {
+    private int getNumberOfAppearancesInMovies(ResultsItem result) {
         return result.films().size();
     }
 }
