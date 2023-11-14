@@ -52,7 +52,7 @@ public class PlanetService {
     }
 
     private int getNumberOfAppearancesInMovies(String planetName) {
-        Response planets = starWarsService.getAllPlanets();
+        Response planets = starWarsService.getPlanet(planetName);
         ResultsItem result = planets.results().stream()
                 .filter(p -> planetName.equals(p.name()))
                 .findAny()
