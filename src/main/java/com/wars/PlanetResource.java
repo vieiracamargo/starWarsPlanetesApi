@@ -1,5 +1,6 @@
 package com.wars;
 
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -12,5 +13,5 @@ public interface PlanetResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    Response createPlanet(PlanetInput input );
+    Response createPlanet(@Valid PlanetInput input );
 }

@@ -11,7 +11,7 @@ public class PlanetResourceImpl implements PlanetResource {
     public PlanetResourceImpl(PlanetService planetService) {
         this.planetService = planetService;
     }
-    public Response createPlanet(PlanetInput input ){
+    public Response createPlanet(PlanetInput input){
         Planet planet = parseToPlanet(input);
         planetService.createPlanet(planet);
         return Response
