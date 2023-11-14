@@ -26,5 +26,9 @@ public class PlanetResourceImpl implements PlanetResource {
         return Response.ok(output).build();
     }
 
-
+    @Override
+    public Response getPlanetByName(String planetName) {
+        PlanetOutput output = planetService.getPlanetByName(planetName);
+        return Response.ok(output).build();
+    }
 }

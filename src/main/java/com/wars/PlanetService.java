@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -22,26 +23,45 @@ public class PlanetService {
 
     @Transactional
     public void createPlanet(PlanetInput input) {
+        if(planetAlreadyPersisted(input)){
+            throw new PlanetAlreadyPersistedException("This planet is already persisted in database");
+        }
+
         Planet planet = planetMapper.mapInputToEntity(input);
         planetRepository.persist(planet);
     }
 
+    @Transactional
     public PlanetOutput getPlanetById(UUID planetId) {
-        Planet planet = planetRepository.findById(planetId);
-        Response planets = starWarsService.getAllPlanets();
-        ResultsItem result = findPlanetByName(planet.getName(), planets);
-        planet.setNumberOfAppearancesInMovies(getNumberOfAppearancesInMovies(result));
+        Planet planet = planetRepository.findByIdOptional(planetId)
+                .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
+
+        int numberOfAppearancesInMovies = getNumberOfAppearancesInMovies(planet.getName());
+        planet.setNumberOfAppearancesInMovies(numberOfAppearancesInMovies);
         return planetMapper.mapEntityToOutput(planet);
     }
 
-    private ResultsItem findPlanetByName(String planetName, Response planets) {
-        return planets.results().stream()
-                .filter(p -> planetName.equals(p.name()))
-                .findAny()
-                .orElseThrow(()-> new PlanetNotFoundException("Planet not found"));
+    @Transactional
+    public PlanetOutput getPlanetByName(String name) {
+        Planet planet = planetRepository.findByOptionalName(name)
+                .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
+
+        int numberOfAppearancesInMovies = getNumberOfAppearancesInMovies(name);
+        planet.setNumberOfAppearancesInMovies(numberOfAppearancesInMovies);
+        return planetMapper.mapEntityToOutput(planet);
     }
 
-    private int getNumberOfAppearancesInMovies(ResultsItem result) {
+    private int getNumberOfAppearancesInMovies(String planetName) {
+        Response planets = starWarsService.getAllPlanets();
+        ResultsItem result = planets.results().stream()
+                .filter(p -> planetName.equals(p.name()))
+                .findAny()
+                .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
+
         return result.films().size();
+    }
+    private boolean planetAlreadyPersisted(PlanetInput input) {
+        Optional<Planet> response = planetRepository.findByOptionalName(input.name());
+        return response.isPresent();
     }
 }

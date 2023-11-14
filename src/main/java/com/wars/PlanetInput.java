@@ -14,4 +14,15 @@ public record PlanetInput(
         @JsonbProperty("terrain")
         String terrain
 ) {
+        public PlanetInput(
+                           String name,
+                           String weather,
+                           String terrain
+        ) {
+                this.name = name.strip();
+                this.weather = weather;
+                this.terrain = terrain;
+        }
+
+
 }
