@@ -12,19 +12,10 @@ public class PlanetResourceImpl implements PlanetResource {
         this.planetService = planetService;
     }
     public Response createPlanet(PlanetInput input){
-        Planet planet = parseToPlanet(input);
-        planetService.createPlanet(planet);
+        planetService.createPlanet(input);
         return Response
                 .status(Response.Status.CREATED)
                 .build();
     }
 
-    private Planet parseToPlanet(PlanetInput input) {
-       return new Planet(
-                input.name(),
-                input.weather(),
-                input.terrain(),
-                input.numberOfAppearancesInMovies()
-        );
-    }
 }

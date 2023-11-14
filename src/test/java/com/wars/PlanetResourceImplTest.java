@@ -32,7 +32,7 @@ class PlanetResourceImplTest {
 
         Response response = resource.createPlanet(input);
         Assertions.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-        Mockito.verify(service).createPlanet(Mockito.any(Planet.class));
+        Mockito.verify(service).createPlanet(Mockito.any(PlanetInput.class));
         Mockito.verifyNoMoreInteractions(service);
     }
 }
