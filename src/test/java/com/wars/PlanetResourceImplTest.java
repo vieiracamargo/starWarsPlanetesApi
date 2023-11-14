@@ -26,8 +26,7 @@ class PlanetResourceImplTest {
         PlanetInput input = new PlanetInput(
                 "Tatooine",
                 "Árido",
-                "Deserto",
-                5
+                "Deserto"
         );
 
         Response response = resource.createPlanet(input);

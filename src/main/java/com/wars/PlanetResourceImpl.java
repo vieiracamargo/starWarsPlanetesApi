@@ -3,6 +3,8 @@ package com.wars;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
 
+import java.util.UUID;
+
 @ApplicationScoped
 public class PlanetResourceImpl implements PlanetResource {
 
@@ -17,5 +19,12 @@ public class PlanetResourceImpl implements PlanetResource {
                 .status(Response.Status.CREATED)
                 .build();
     }
+
+    @Override
+    public Response getPlanetById(UUID planetId) {
+        PlanetOutput output = planetService.getPlanetById(planetId);
+        return Response.ok(output).build();
+    }
+
 
 }

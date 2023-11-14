@@ -1,17 +1,20 @@
 package com.wars;
 
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path(AplicationPaths.ROOT_PATH)
+import java.util.UUID;
+
+@Path(Paths.ROOT_PATH)
 public interface PlanetResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    Response createPlanet(@Valid PlanetInput input);
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    Response createPlanet(@Valid PlanetInput input );
+    @Path("{planetId}")
+    Response getPlanetById(@PathParam("planetId") UUID planetId);
 }
