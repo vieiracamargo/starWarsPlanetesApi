@@ -9,7 +9,16 @@ public class PlanetMapper {
                 input.name(),
                 input.weather(),
                 input.terrain(),
-                input.numberOfAppearancesInMovies()
+                null
+        );
+    }
+
+    public PlanetOutput mapEntityToOutput(Planet planet){
+        return new PlanetOutput(
+                planet.getName(),
+                planet.getWeather(),
+                planet.getTerrain(),
+                planet.getNumberOfAppearancesInMovies()
         );
     }
 }

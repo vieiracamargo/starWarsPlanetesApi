@@ -16,7 +16,7 @@ public class Planet {
     private String weather;
     @Column(name = "terrain", nullable = false)
     private String terrain;
-    @Column(name = "number_of_appearances_in_movies", nullable = false)
+    @Column(name = "number_of_appearances_in_movies")
     private Integer numberOfAppearancesInMovies;
     public Planet(String name, String weather, String terrain, Integer numberOfAppearancesInMovies) {
         this.name = name;
