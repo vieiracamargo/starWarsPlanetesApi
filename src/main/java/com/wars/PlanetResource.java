@@ -17,11 +17,11 @@ public interface PlanetResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{planetId}")
+    @Path("/{planetId}")
     Response getPlanetById(@PathParam("planetId") UUID planetId);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{planetName}")
+    @Path("/name/{planetName}")
     Response getPlanetByName(@PathParam("planetName") @NotBlank String planetName);
 }

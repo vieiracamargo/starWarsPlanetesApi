@@ -15,6 +15,7 @@ public class PlanetMapper {
 
     public PlanetOutput mapEntityToOutput(Planet planet){
         return new PlanetOutput(
+                planet.getUuid(),
                 planet.getName(),
                 planet.getWeather(),
                 planet.getTerrain(),
