@@ -24,4 +24,8 @@ public interface PlanetResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/name/{planetName}")
     Response getPlanetByName(@PathParam("planetName") @NotBlank String planetName);
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getAllPlanets(@BeanParam QueryParams queryParams);
 }

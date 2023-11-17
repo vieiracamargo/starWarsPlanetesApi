@@ -1,9 +1,12 @@
 package com.wars;
 
+import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,7 +26,7 @@ public class PlanetService {
 
     @Transactional
     public void createPlanet(PlanetInput input) {
-        if(planetAlreadyPersisted(input)){
+        if (planetAlreadyPersisted(input)) {
             throw new PlanetAlreadyPersistedException("This planet is already persisted in database");
         }
 
@@ -50,6 +53,17 @@ public class PlanetService {
         planet.setNumberOfAppearancesInMovies(numberOfAppearancesInMovies);
         return planetMapper.mapEntityToOutput(planet);
     }
+    @Transactional
+    public List<PlanetOutput> getAllPlanets(QueryParams queryParams) {
+        Sort sort = Sort.by(queryParams.getSort(), queryParams.getDirection());
+        Page pageable = Page.of(queryParams.getPage(), queryParams.getSize());
+
+        return planetRepository.findAll(sort)
+                .page(pageable)
+                .list()
+                .stream().map(planetMapper::mapEntityToOutput)
+                .toList();
+    }
 
     private int getNumberOfAppearancesInMovies(String planetName) {
         Response planets = starWarsService.getPlanet(planetName);
@@ -60,6 +74,7 @@ public class PlanetService {
 
         return result.films().size();
     }
+
     private boolean planetAlreadyPersisted(PlanetInput input) {
         Optional<Planet> response = planetRepository.findByOptionalName(input.name());
         return response.isPresent();

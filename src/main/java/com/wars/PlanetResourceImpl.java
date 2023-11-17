@@ -3,6 +3,7 @@ package com.wars;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -30,5 +31,11 @@ public class PlanetResourceImpl implements PlanetResource {
     public Response getPlanetByName(String planetName) {
         PlanetOutput output = planetService.getPlanetByName(planetName);
         return Response.ok(output).build();
+    }
+
+    @Override
+    public Response getAllPlanets(QueryParams queryParams) {
+        List<PlanetOutput> allPlanets = planetService.getAllPlanets(queryParams);
+        return Response.ok(allPlanets).build();
     }
 }
