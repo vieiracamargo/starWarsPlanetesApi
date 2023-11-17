@@ -60,8 +60,8 @@ public class PlanetService {
 
         return planetRepository.findAll(sort)
                 .page(pageable)
-                .list()
-                .stream().map(planetMapper::mapEntityToOutput)
+                .stream()
+                .map(planetMapper::mapEntityToOutput)
                 .toList();
     }
 
