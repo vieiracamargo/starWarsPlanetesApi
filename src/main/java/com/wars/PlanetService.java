@@ -1,5 +1,6 @@
 package com.wars;
 
+import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -31,29 +32,29 @@ public class PlanetService {
         }
 
         Planet planet = planetMapper.mapInputToEntity(input);
+        String planetName = planet.getName();
+        int numberOfAppearancesInMovies = getNumberOfAppearancesInMovies(planetName);
+        planet.setNumberOfAppearancesInMovies(numberOfAppearancesInMovies);
         planetRepository.persist(planet);
     }
 
     @Transactional
     public PlanetOutput getPlanetById(UUID planetId) {
         Planet planet = planetRepository.findByIdOptional(planetId)
-                .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
+                .orElseThrow(() -> new PlanetNotFoundException(ExceptionMessage.PLANET_NOT_FOUND));
 
-        int numberOfAppearancesInMovies = getNumberOfAppearancesInMovies(planet.getName());
-        planet.setNumberOfAppearancesInMovies(numberOfAppearancesInMovies);
         return planetMapper.mapEntityToOutput(planet);
     }
 
     @Transactional
     public PlanetOutput getPlanetByName(String name) {
         Planet planet = planetRepository.findByOptionalName(name)
-                .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
+                .orElseThrow(() -> new PlanetNotFoundException(ExceptionMessage.PLANET_NOT_FOUND));
 
-        int numberOfAppearancesInMovies = getNumberOfAppearancesInMovies(name);
-        planet.setNumberOfAppearancesInMovies(numberOfAppearancesInMovies);
         return planetMapper.mapEntityToOutput(planet);
     }
     @Transactional
+    @CacheResult(cacheName = "allPlanets")
     public List<PlanetOutput> getAllPlanets(QueryParams queryParams) {
         Sort sort = Sort.by(queryParams.getSort(), queryParams.getDirection());
         Page pageable = Page.of(queryParams.getPage(), queryParams.getSize());
@@ -70,7 +71,7 @@ public class PlanetService {
         ResultsItem result = planets.results().stream()
                 .filter(p -> planetName.equals(p.name()))
                 .findAny()
-                .orElseThrow(() -> new PlanetNotFoundException("Planet not found"));
+                .orElseThrow(() -> new PlanetNotFoundException(ExceptionMessage.PLANET_NOT_FOUND));
 
         return result.films().size();
     }
