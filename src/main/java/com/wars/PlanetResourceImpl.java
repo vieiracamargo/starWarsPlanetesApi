@@ -38,4 +38,10 @@ public class PlanetResourceImpl implements PlanetResource {
         List<PlanetOutput> allPlanets = planetService.getAllPlanets(queryParams);
         return Response.ok(allPlanets).build();
     }
+
+    @Override
+    public Response deletePlanetById(UUID planetId) {
+        planetService.deletePlanetById(planetId);
+        return Response.noContent().build();
+    }
 }

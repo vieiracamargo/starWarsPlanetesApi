@@ -1,6 +1,5 @@
 package com.wars;
 
-import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -28,7 +27,7 @@ public class PlanetService {
     @Transactional
     public void createPlanet(PlanetInput input) {
         if (planetAlreadyPersisted(input)) {
-            throw new PlanetAlreadyPersistedException("This planet is already persisted in database");
+            throw new PlanetAlreadyPersistedException(ExceptionMessage.PLANET_ALREADY_PERSISTED);
         }
 
         Planet planet = planetMapper.mapInputToEntity(input);
@@ -53,8 +52,8 @@ public class PlanetService {
 
         return planetMapper.mapEntityToOutput(planet);
     }
+
     @Transactional
-    @CacheResult(cacheName = "allPlanets")
     public List<PlanetOutput> getAllPlanets(QueryParams queryParams) {
         Sort sort = Sort.by(queryParams.getSort(), queryParams.getDirection());
         Page pageable = Page.of(queryParams.getPage(), queryParams.getSize());
@@ -64,6 +63,14 @@ public class PlanetService {
                 .stream()
                 .map(planetMapper::mapEntityToOutput)
                 .toList();
+    }
+
+    @Transactional
+    public void deletePlanetById(UUID planetId) {
+        Planet planet = planetRepository.findByIdOptional(planetId)
+                .orElseThrow(() -> new PlanetNotFoundException(ExceptionMessage.PLANET_NOT_FOUND));
+
+        planetRepository.delete(planet);
     }
 
     private int getNumberOfAppearancesInMovies(String planetName) {
