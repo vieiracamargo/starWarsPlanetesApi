@@ -28,4 +28,9 @@ public interface PlanetResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     Response getAllPlanets(@BeanParam QueryParams queryParams);
+
+    @DELETE
+    @Path("/{planetId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response deletePlanetById(@PathParam("planetId") UUID planetId);
 }
