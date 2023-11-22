@@ -5,10 +5,10 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class GeneralExceptionMapper implements ExceptionMapper<Exception> {
+public class GeneralExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Override
-    public Response toResponse(Exception e) {
+    public Response toResponse(Throwable throwable) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }
