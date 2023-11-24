@@ -4,8 +4,10 @@ import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -71,8 +73,13 @@ public class PlanetService {
         planetRepository.delete(planet);
     }
 
+    @Retry(maxRetries = 3, delayUnit = ChronoUnit.SECONDS, delay = 1L)
+    public Response getPlanetData(String planetName) {
+        return starWarsService.getPlanet(planetName);
+    }
+
     private int getNumberOfAppearancesInMovies(String planetName) {
-        Response planets = starWarsService.getPlanet(planetName);
+        Response planets = getPlanetData(planetName);
         ResultsItem result = planets.results().stream()
                 .filter(p -> planetName.equals(p.name()))
                 .findAny()
