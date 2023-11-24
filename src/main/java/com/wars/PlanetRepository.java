@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @ApplicationScoped
 public class PlanetRepository implements PanacheRepositoryBase<Planet, UUID> {
-    public Optional<Planet> findByOptionalName(String name) {
-        return find("name", name).firstResultOptional();
+    public Optional<PlanetOutput> findByOptionalName(String name) {
+        return find("name", name).project(PlanetOutput.class).firstResultOptional();
     }
 }

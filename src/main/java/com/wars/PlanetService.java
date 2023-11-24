@@ -47,10 +47,8 @@ public class PlanetService {
 
     @Transactional
     public PlanetOutput getPlanetByName(String name) {
-        Planet planet = planetRepository.findByOptionalName(name)
+        return planetRepository.findByOptionalName(name)
                 .orElseThrow(() -> new PlanetNotFoundException(ExceptionMessage.PLANET_NOT_FOUND));
-
-        return planetMapper.mapEntityToOutput(planet);
     }
 
     @Transactional
@@ -84,7 +82,7 @@ public class PlanetService {
     }
 
     private boolean planetAlreadyPersisted(PlanetInput input) {
-        Optional<Planet> response = planetRepository.findByOptionalName(input.name());
+        Optional<PlanetOutput> response = planetRepository.findByOptionalName(input.name());
         return response.isPresent();
     }
 }
