@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Table(name = "planets")
 public class Planet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

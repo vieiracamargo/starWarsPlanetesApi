@@ -4,8 +4,10 @@ import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ServiceUnavailableException;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -17,6 +19,8 @@ public class PlanetService {
     private final PlanetRepository planetRepository;
 
     private final PlanetMapper planetMapper;
+
+    private static final Logger LOGGER = Logger.getLogger(PlanetService.class);
 
     @RestClient
     StarWarsService starWarsService;
@@ -73,9 +77,14 @@ public class PlanetService {
         planetRepository.delete(planet);
     }
 
-    @Retry(maxRetries = 3, delayUnit = ChronoUnit.SECONDS, delay = 1L)
+    @Retry(maxRetries = 3, delayUnit = ChronoUnit.SECONDS, delay = 2L, retryOn = ServiceUnavailableException.class)
     public Response getPlanetData(String planetName) {
-        return starWarsService.getPlanet(planetName);
+        try {
+            return starWarsService.getPlanet(planetName);
+        } catch (Exception e) {
+            LOGGER.error("Failed to connect with StarWars external api.", e);
+            throw new ServiceUnavailableException();
+        }
     }
 
     private int getNumberOfAppearancesInMovies(String planetName) {

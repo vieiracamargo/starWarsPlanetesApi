@@ -1,37 +1,22 @@
 package com.wars;
 
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Response;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.greaterThan;
+
 @QuarkusTest
 class PlanetResourceImplTest {
 
-    PlanetResource resource;
+    String baseUrl = "http://localhost:8081/api/v1/star-wars/planets";
 
-
-    PlanetService service;
-
-    @BeforeEach
-    void setup(){
-        service = Mockito.mock(PlanetService.class);
-        resource = new PlanetResourceImpl(service);
-    }
     @Test
-    @Transactional
-    void test_should_persist_planet_entity(){
-        PlanetInput input = new PlanetInput(
-                "Tatooine",
-                "Árido",
-                "Deserto"
-        );
-
-        Response response = resource.createPlanet(input);
-        Assertions.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-        Mockito.verify(service).createPlanet(Mockito.any(PlanetInput.class));
-        Mockito.verifyNoMoreInteractions(service);
+    void shouldGetAllPlanets() {
+        given().when()
+                .get(baseUrl)
+                .then()
+                .statusCode(200)
+                .body("size()", greaterThan(0));
     }
 }
