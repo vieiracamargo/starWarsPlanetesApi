@@ -5,6 +5,7 @@ import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.ServiceUnavailableException;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
@@ -78,6 +79,7 @@ public class PlanetService {
     }
 
     @Retry(maxRetries = 3, delayUnit = ChronoUnit.SECONDS, delay = 2L, retryOn = ServiceUnavailableException.class)
+    @CircuitBreaker(requestVolumeThreshold = 7, delay = 5L, delayUnit = ChronoUnit.SECONDS, failureRatio = 1)
     public Response getPlanetData(String planetName) {
         try {
             return starWarsService.getPlanet(planetName);
