@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
+@Logged
 public class PlanetResourceImpl implements PlanetResource {
 
     private final PlanetService planetService;
